@@ -1,0 +1,10 @@
+{
+    "test": [
+        {
+            "id": "pikachu",
+            "moveset": [
+                "tackle"
+            ]
+        }
+    ]
+}
