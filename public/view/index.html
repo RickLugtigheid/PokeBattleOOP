@@ -13,31 +13,32 @@
 </head>
 <body>
     <!-- Home -->
-    <div id="home">
+    <div id="home-container" class="container">
         <button id="battle-btn">Battle</button>
     </div>
 
     <!-- Battle -->
-    <div id="battle">
+    <div id="battle-container" class="container disabled">
         <div id="enemy">
             <img src="" alt="Animation not found">
-            <h2 id="name">bulbasaur</h2>
+            <h2 id="name"></h2>
             <progress max="500" value="500"></progress>
         </div>
         
         <div id="player">
             <img src="" alt="Animation not found">
-            <h2 id="name">bulbasaur</h2>
+            <h2 id="name"></h2>
             <progress max="500" value="500"></progress>
         </div>
-    </div>
-    
-    <div id="move-list">
+            
+        <div id="move-list">
 
+        </div>
     </div>
 
     <!-- Scripts -->
     <script src="socket.io/socket.io.js"></script>
+    <script src="../js/container.js"></script>
     <script src="../js/socket.js"></script>
 </body>
 </html>

@@ -10,6 +10,9 @@ module.exports = class
      */
     constructor(player1, player2)
     {
+        // Set battle active
+        this.active = true;
+
         // Get pokemon foreach player
         this.player1 = {socket: player1, pokemon: this.randomPokemon()};
         this.player2 = {socket: player2, pokemon: this.randomPokemon()};
@@ -25,10 +28,6 @@ module.exports = class
         console.log(`[Battle]: Started between '${this.player1.socket.id}' and '${this.player2.socket.id}'`);
     }
     /**
-     * @type {Array.<{event: string, args: Array.<object>}>}
-     */
-    commandQueue = []
-    /**
      * Add battle events to sockets
      * @param {Socket} player 
      */
@@ -40,6 +39,7 @@ module.exports = class
         // Set events
         player.on('move', args => 
         {
+            if(!this.active) return;
             switch(args['event'])
             {
                 case 'selected':
@@ -58,7 +58,7 @@ module.exports = class
                 break;
                 case 'info':
                     // Sends the moves info to the client
-                    player.emit('move', {event: 'info', info: moves[args['moveID']]});
+                    player.emit('move', {event: 'info', info: moves[args['moveID']], id: args['moveID']});
                 break;
             }
         });
@@ -93,6 +93,8 @@ module.exports = class
      */
     useMove(source, target, move)
     {
+        if(!this.active) return;
+
         // Tell client that 'source' is attacking
         this.player1.socket.emit('pokemon', {event: 'attack', user: source == this.player1.pokemon});
         this.player2.socket.emit('pokemon', {event: 'attack', user: source == this.player2.pokemon});
@@ -118,6 +120,15 @@ module.exports = class
                         this.player1.socket.emit('pokemon', {event: 'damage', user: source == this.player1.pokemon, damage: dmg * move.recoil});
                         this.player2.socket.emit('pokemon', {event: 'damage', user: source == this.player2.pokemon, damage: dmg * move.recoil});    
                     }
+
+                    // Check if 'target' has health left
+                    if(target.health <= 0)
+                    {
+                        // Target fainted so source won the battle
+                        this.player1.socket.emit('pokemon', {event: 'faint', user: target == this.player1.pokemon});
+                        this.player2.socket.emit('pokemon', {event: 'faint', user: target == this.player2.pokemon});
+                        this.end();
+                    }
                 break;
                 case "self":
                     // TODO: Implement Powerup moves targeted to self
@@ -130,6 +141,19 @@ module.exports = class
             this.player1.socket.emit('pokemon', {event: 'miss', user: source == this.player1.pokemon});
             this.player2.socket.emit('pokemon', {event: 'miss', user: source == this.player2.pokemon});
         }
+    }
+    /**
+     * End this battle
+     */
+    end()
+    {
+        this.player1.socket.emit('battle', {event: 'end'});
+        this.player2.socket.emit('battle', {event: 'end'});
+
+        // Unset players so we don't take events anymore and we can wait for the garbage collector without the players being bale to battle
+        this.active = false;
+        this.player1.socket = null;
+        this.player2.socket = null;
     }
     /**
      * Gets a random pokemon to use for tthe battle

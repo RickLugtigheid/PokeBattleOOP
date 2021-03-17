@@ -1,3 +1,18 @@
 .disabled {
     visibility: hidden;
 }
+
+/* Type Colors */
+.Normal
+{
+    background-color: gray !important;
+}
+.Fire
+{
+    background-color: red !important;
+}
+.Electric
+{
+    background-color: yellow !important;
+    color: black !important;
+}

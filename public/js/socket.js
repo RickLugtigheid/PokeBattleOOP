@@ -25,6 +25,9 @@ socket.on('battle', args =>
         case "start":
             // Set pokemon of the user `args['player']` and enemy `args['enemy']`
             
+            // Show all battle elements
+            Containers.load('battle');
+
             // Set animations
             PLAYER_CONTAINER.querySelector('img').src = `../pokemon/${args['player'].id}_back.gif`; // Player back animation
             ENEMY_CONTAINER.querySelector('img').src = `../pokemon/${args['enemy'].id}_front.gif`; // Enemy front sprite
@@ -42,16 +45,12 @@ socket.on('battle', args =>
 
             // Add moves to move list
             args['player'].moves.forEach(move => {
-                const moveElement = document.createElement('li');
-                moveElement.innerHTML = move;
-                moveElement.onclick = function()
-                {
-                    console.log('Sending: ', {'move': {event: 'selected', moveID: move}});
-                    socket.emit('move', {event: 'selected', moveID: move});
-                };
-                moveElement.classList.value = 'move btn btn-primary';
-                MOVE_LIST.appendChild(moveElement);
+                // Ask for move info
+                socket.emit('move', {event: 'info', moveID: move})
             });
+        break;
+        case "end":
+            Containers.load('home');
         break;
     }
 });
@@ -73,35 +72,38 @@ socket.on('pokemon', args =>
             if(args['user']) PLAYER_CONTAINER.querySelector('progress').value -= args['damage'];
             else ENEMY_CONTAINER.querySelector('progress').value -= args['damage'];
         break;
+        case 'faint':
+            // We only have one pokemon per player so this is a win or loss
+            if(args['user']) alert('You won!!!');
+            else alert('You lost');
+        break;
+    }
+});
+socket.on('move', args =>
+{
+    console.log('Recived: ', {'move': args});
+    switch(args['event'])
+    {
+        case 'info':
+            const moveElement = document.createElement('li');
+            moveElement.innerHTML = args['info'].name;
+            moveElement.onclick = function()
+            {
+                console.log('Sending: ', {'move': {event: 'selected', moveID: args['id']}});
+                socket.emit('move', {event: 'selected', moveID: args['id']});
+            };
+            moveElement.classList.value = args['info'].type + ' move btn btn-primary';
+            MOVE_LIST.appendChild(moveElement);
+        break;
     }
 });
 
-async function playAttackAnimation(isPlayer)
+function playAttackAnimation(isPlayer)
 {
-    const character = isPlayer ? '.player' : '.enemy'
-    // Do a attack animation with jquery
-    $(character + ' img').animate(
-        {
-        'margin-left': '-30px',
-        'margin-top': '10px'
-        },
-        50,
-        'swing'
-    );
-    $(character + ' img').animate(
-        {
-        'margin-left': '30px',
-        'margin-top': '-10px'
-        },
-        50,
-        'swing'
-    );
-    $(character + ' img').animate(
-        {
-        'margin-left': '0px',
-        'margin-top': '0px'
-        },
-        50,
-        'swing'
+    const character = document.querySelector((isPlayer ? '#player' : '#enemy') + ' img');
+    console.log('playing attack animation');
+    character.animate(
+        { transform: [ 'translateX(0px)', `translateX(${!isPlayer ? '-' : ''}27px)`, 'translateX(0px)' ] },
+        { duration: 150, iterations: 1 }
     );
 }
