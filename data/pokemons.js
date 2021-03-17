@@ -1,7 +1,8 @@
+const {Move} = require('./moves');
 /**
  * @type {Object.<string, Pokemon>}
  */
-const dex = 
+module.exports.dex =
 {
     pikachu: {
         name: "Pikachu",
@@ -15,8 +16,9 @@ const dex =
     }
 }
 
-class Pokemon
+module.exports.Pokemon = class
 {
+    /** Default Set Values */
     /**
      * Name of the pokemon
      * @type {string}
@@ -32,6 +34,33 @@ class Pokemon
      * @type {{hp: number, atk: number, def: number, spa: number, spd: number, spe: number}}
      */
     baseStats;
+    /**
+     * @type {Pokemon}
+     */
+    constructor(pokemonObj)
+    {
+        this.name = pokemonObj.name;
+        this.types = pokemonObj.types;
+        this.baseStats = pokemonObj.baseStats;
+        /**
+         * Id of the pokemon to get it in the dex
+         * @type {string}
+         */
+        this.id = null;
+        /**
+         * @type {Array.<Move>}
+         */
+        this.moveSet = []
+        /**
+         * @type {Move}
+         */
+        this.selectedMove = null;
+        /**
+         * Stores pokemon health
+         * @type {string}
+         */
+        this.health = Math.floor(Math.floor(((((2*pokemonObj.baseStats.hp)+100)*100)/100)+10));
+    }
     /**
      * Take damage from a move
      * @param {Pokemon} source 
@@ -52,9 +81,22 @@ class Pokemon
         // Get needed stats
         const attack    = move.category == "Physical" ? source.baseStats.atk : source.baseStats.spa;
         const defence   = move.category == "Physical" ? this.baseStats.def : this.baseStats.spd;
-        const power     = move.getBasePower();
+        const power     = move.getBasePower(source, this);
         const stab      = move.type == source.types[0] || move.type == source.types[1] ? 1.5 : 1; // Stab of source/move; so if (source.electric && move.electric) stab = 1.5f; or 1
-        const typeModifiers = null; // Check wat should be here
+        const effective = 1; // Effectiveness = 0 or .5 or 1 or 2 or 4
         const random    = Math.random() * (255 - 217) + 217; /// 217 = min; 255 = max;
+        const level     = 100;
+
+        const damage = ((((2 * level / 5 + 2) * attack * power / defence) / 50) + 2) * stab * effective;
+        this.health -= damage;
+        return damage;
+    }
+    /**
+     * Take damage without move or source; Handy for recoil or abilities
+     * @param {number} damage 
+     */
+    takeMiscDamage(damage)
+    {
+        this.health -= damage;
     }
 }

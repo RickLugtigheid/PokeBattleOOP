@@ -1,7 +1,7 @@
 /**
  * @type {Object.<string, Move>}
  */
-const moves = 
+module.exports.moves = 
 {
     tackle: {
         name: "Tackle",
@@ -47,7 +47,7 @@ const moves =
         pp: 15,
         flags: {contact: true, protect: true},
         target: "normal",
-        recoil: [33, 100]
+        recoil: .33
     },
     thundershock: {
         name: "Thunder Shock",
@@ -105,7 +105,7 @@ const moves =
     }
 }
 
-class Move
+module.exports.Move = class
 {
     /**
      * Display name of the move
@@ -147,8 +147,8 @@ class Move
      */
     priority = 0;
     /**
-     * Recoil damage; num1 of num2 of damage delt; Set null for no recoil damage
-     * @type {Array<string>}
+     * Recoil damage; % of damage to deal of delt damage; Set null for no recoil damage
+     * @type {int}
      */
     recoil = null;
     /**
@@ -166,6 +166,28 @@ class Move
     */
     target;
 
+    /**
+     * @param {Move} moveObj 
+     */
+    constructor(moveObj)
+    {
+        this.accuracy = moveObj.accuracy;
+        this.basePower = moveObj.basePower;
+        this.category = moveObj.category;
+        this.desc = moveObj.desc;
+        this.flags = moveObj.flags;
+        this.name = moveObj.name;
+        this.onBasePower = moveObj.onBasePower;
+        this.pp = moveObj.pp;
+        this.priority = moveObj.priority;
+        this.recoil = moveObj.recoil;
+        this.secondary = moveObj.secondary;
+        this.target = moveObj.target;
+        this.type = moveObj.type;
+
+        this.curentPP = this.pp;
+    }
+
     /** Events */
     /**
      * 
@@ -180,6 +202,15 @@ class Move
      */
     getBasePower(source, target)
     {
-        return this.onBasePower() || this.basePower(source, target);
+        if(typeof this.onBasePower == 'function') return this.onBasePower(source, target);
+        return this.basePower;
+    }
+    doesHit()
+    {
+        if(typeof this.accuracy == "boolean") return this.accuracy;
+        
+        // Random % chance the it
+        const random = Math.floor(Math.random() * 100) + 1; // returns a random integer from 1 to 100
+        return random <= this.accuracy;
     }
 }

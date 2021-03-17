@@ -1,7 +1,7 @@
 /**
  * @type {Object.<string, Array.<string>>}
  */
-const learnsets =
+module.exports =
 {
     pikachu: [
         "tackle",
