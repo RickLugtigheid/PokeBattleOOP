@@ -2,20 +2,21 @@ const { Socket } = require("socket.io");
 const { dex, Pokemon } = require('../data/pokemons');
 const { moves, Move } = require('../data/moves');
 const learnsets = require('../data/learnsets');
+const tiers = require('../data/tiers');
 module.exports = class
 {
     /**
      * @param {Socket} player1 
      * @param {Socket} player2 
      */
-    constructor(player1, player2)
+    constructor(player1, player2, tier)
     {
         // Set battle active
         this.active = true;
 
         // Get pokemon foreach player
-        this.player1 = {socket: player1, pokemon: this.randomPokemon()};
-        this.player2 = {socket: player2, pokemon: this.randomPokemon()};
+        this.player1 = {socket: player1, pokemon: this.randomPokemon(tier)};
+        this.player2 = {socket: player2, pokemon: this.randomPokemon(tier)};
 
         // Set battle events
         this.addListners(player1);
@@ -61,6 +62,13 @@ module.exports = class
                     player.emit('move', {event: 'info', info: moves[args['moveID']], id: args['moveID']});
                 break;
             }
+        });
+        player.on("disconnect", () => {
+            if(!this.active) return;
+
+            const enemy = (player.id == this.player1.socket.id ? this.player2.socket : this.player1.socket);
+            enemy.emit('message', 'Enemy left...');
+            this.end();
         });
     }
     /**
@@ -151,9 +159,10 @@ module.exports = class
      */
     end()
     {
+        console.log(`[Battle]: Ended between '${this.player1.socket.id}' and '${this.player2.socket.id}'`);
         this.player1.socket.emit('battle', {event: 'end'});
         this.player2.socket.emit('battle', {event: 'end'});
-
+        
         // Unset players so we don't take events anymore and we can wait for the garbage collector without the players being bale to battle
         this.active = false;
         this.player1.socket = null;
@@ -163,11 +172,12 @@ module.exports = class
      * Gets a random pokemon to use for tthe battle
      * @return {Pokemon}
      */
-    randomPokemon()
+    randomPokemon(tier)
     {
         // Get a random pokemon
-        const idList = Object.keys(dex);
-        const pokemonid = idList[Math.floor(Math.random() * idList.length)];
+        const pokemonid = tiers[tier].pokemons[Math.floor(Math.random() * tiers[tier].pokemons.length)];
+        console.log(tiers);
+        console.warn(tier);
         /**
          * @type {Pokemon}
          */

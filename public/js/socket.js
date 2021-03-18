@@ -12,10 +12,18 @@ const socket = io();
 BATTLE_BTN.onclick = function()
 {
     // Go to the battle queue and set battle btn in active
-    socket.emit('battle', {event: 'enter'});
-    console.log('Sending: ', {'battle': {event: 'enter'}});
+    socket.emit('battle', {event: 'enter', tier: document.getElementById('tier-select').value});
+    console.log('Sending: ', {'battle': {event: 'enter', tier: document.getElementById('tier-select').value}});
     BATTLE_BTN.classList.add('disabled');
 }
+document.querySelectorAll('.home-btn').forEach(homeBtn =>
+{
+    homeBtn.onclick = function()
+    {
+        Containers.load('home');
+        document.getElementById('battle-container').style.opacity = 1;
+    }
+});
 
 // Set event listners
 socket.on('battle', args =>
@@ -51,7 +59,9 @@ socket.on('battle', args =>
             });
         break;
         case "end":
-            //Containers.load('home');
+            document.getElementById('battle-container').style.opacity = .75;
+            // Load pupop with jquery
+            $("#battleModal").modal();
         break;
     }
 });
@@ -102,6 +112,9 @@ socket.on('move', args =>
             MOVE_LIST.appendChild(moveElement);
         break;
     }
+});
+socket.on('message', msg => {
+    console.log('Recived: message - ', msg);
 });
 /**
  * Gets player or enemy pokemon

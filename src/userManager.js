@@ -16,7 +16,15 @@ module.exports = class
             this.clients.push(client);
             client.on('battle', args =>
             {
-                if(args['event'] == 'enter') this.userEnterBattleQueue(client);
+                console.log('[Battle]: Recived ', args);
+                if(args['event'] == 'enter') 
+                {
+                    this.userEnterBattleQueue(client, args['tier']);
+                    client.on('disconnect', () =>
+                    {
+                        this.battleQueue[args['tier']][client] = null;
+                    });
+                }
             });
         });
     }
@@ -25,7 +33,7 @@ module.exports = class
      */
     static clients = [];
     /**
-     * @type {Array.<Socket>}
+     * @type {Object.<string, Array.<Socket>>}
      */
     static battleQueue = [];
     /**
@@ -36,32 +44,39 @@ module.exports = class
      * 
      * @param {Socket} user 
      */
-    static userEnterBattleQueue(user)
+    static userEnterBattleQueue(user, tier)
     {
         // Show that user entered
-        console.log(`[${user.id}]: Entered the battle queue`);
+        console.log(`[${user.id}]: Entered the '${tier}' battle queue`);
+
+        // If there is no array for this tier than create one
+        if(!this.battleQueue[tier]) this.battleQueue[tier] = [];
+
         // Add user to the queue
-        this.battleQueue.push(user);
-        if(this.battleQueue.length <= 1) return; // Don't start a battle
+        this.battleQueue[tier].push(user);
+
+        if(this.battleQueue[tier].length <= 1) return; // Don't start a battle
         do
         {
             // Get 2 players from the queue
-            const player1 = this.battleQueue.shift();
-            const player2 = this.battleQueue.shift();
+            const player1 = this.battleQueue[tier].shift();
+            const player2 = this.battleQueue[tier].shift();
+
+            if(player1 == null || player2 == null) continue;
 
             // Start a battle between these players
-            this.startBattle(player1, player2);
+            this.startBattle(player1, player2, tier);
         }
-        while(this.battleQueue.length >= 1) // Until there is only one or 0 users in the queue
+        while(this.battleQueue[tier].length >= 1) // Until there is only one or 0 users in the queue
     }
     /**
      * Starts a battle between 2 users
      * @param {Socket} player1 
      * @param {Socket} player2 
      */
-    static startBattle(player1, player2)
+    static startBattle(player1, player2, tier)
     {
-        const battle = new Battle(player1, player2);
+        const battle = new Battle(player1, player2, tier);
         this.activeBattles.push(battle);
     }
 }
