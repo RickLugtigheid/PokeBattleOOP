@@ -66,7 +66,7 @@ module.exports = class
     /**
      * Tries to start the battle
      */
-    tryStartBattle()
+    async tryStartBattle()
     {
         // Check if our players are ready
         if(this.player1.pokemon.selectedMove == null || this.player2.pokemon.selectedMove == null) return;
@@ -79,11 +79,15 @@ module.exports = class
 
         // Use the selected moves
         this.useMove(first.pokemon, last.pokemon, first.pokemon.selectedMove);
-        this.useMove(last.pokemon, first.pokemon, last.pokemon.selectedMove);
-
-        // Reset moves
-        this.player1.pokemon.selectedMove = null;
-        this.player2.pokemon.selectedMove = null;
+        // Wait 1 second for the client animation
+        setTimeout(() => 
+        {
+            this.useMove(last.pokemon, first.pokemon, last.pokemon.selectedMove)
+            
+            // Reset moves
+            this.player1.pokemon.selectedMove = null;
+            this.player2.pokemon.selectedMove = null;
+        }, 1000)
     }
     /**
      * Use a move

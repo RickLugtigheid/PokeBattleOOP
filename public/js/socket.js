@@ -3,6 +3,7 @@ const ENEMY_CONTAINER = document.getElementById('enemy');
 const PLAYER_CONTAINER = document.getElementById('player');
 const BATTLE_BTN = document.getElementById('battle-btn');
 const MOVE_LIST = document.getElementById('move-list');
+const BATTLE_LOGS = document.getElementById('battle-logs');
 
 // Start our socket
 const socket = io();
@@ -50,7 +51,7 @@ socket.on('battle', args =>
             });
         break;
         case "end":
-            Containers.load('home');
+            //Containers.load('home');
         break;
     }
 });
@@ -62,9 +63,11 @@ socket.on('pokemon', args =>
         case 'attack':
             // Play attack animation for pokemon
             playAttackAnimation(args['user']);
+            write(`${getPokemon(args['user'])} used ${args['move']}`);
         break;
         case 'miss':
             // Attack has missed
+            write(`${getPokemon(args['user'])} missed!`);
         break;
         case 'damage':
             // Update healthbar for pokemon
@@ -74,8 +77,10 @@ socket.on('pokemon', args =>
         break;
         case 'faint':
             // We only have one pokemon per player so this is a win or loss
-            if(args['user']) alert('You won!!!');
-            else alert('You lost');
+            //if(args['user']) alert('You won!!!');
+            //else alert('You lost');
+            write(`${getPokemon(args['user'])} fainted!`);
+            playFaintAnimation(args['user']);
         break;
     }
 });
@@ -85,6 +90,7 @@ socket.on('move', args =>
     switch(args['event'])
     {
         case 'info':
+            // Create a element for the move
             const moveElement = document.createElement('li');
             moveElement.innerHTML = args['info'].name;
             moveElement.onclick = function()
@@ -97,13 +103,49 @@ socket.on('move', args =>
         break;
     }
 });
-
+/**
+ * Gets player or enemy pokemon
+ * @param {boolean} ofPlayer 
+ * @returns Name of the pokemon 
+ */
+function getPokemon(ofPlayer)
+{
+    return document.querySelector((ofPlayer ? '#player' : '#enemy') + ' #name').innerHTML;
+}
+/**
+ * Writes a line to the battle log
+ * @param {string} text 
+ */
+function write(text)
+{
+    
+}
+/**
+ * Play's attack animation for a pokemon
+ * @param {bool} isPlayer 
+ */
 function playAttackAnimation(isPlayer)
 {
     const character = document.querySelector((isPlayer ? '#player' : '#enemy') + ' img');
-    console.log('playing attack animation');
     character.animate(
         { transform: [ 'translateX(0px)', `translateX(${!isPlayer ? '-' : ''}27px)`, 'translateX(0px)' ] },
         { duration: 150, iterations: 1 }
     );
+}
+/**
+ * Plays faint animation for a pokemon
+ * @param {boolean} isPlayer 
+ */
+function playFaintAnimation(isPlayer)
+{
+    const character = document.querySelector((isPlayer ? '#player' : '#enemy') + ' img');
+    // When fainting play animation
+    character.animate(
+        { transform: [ 'translateY(0px)', 'translateY(160px)' ] },
+        { duration: 300, iterations: 1 }
+    ).addEventListener('finish', () =>  
+    {
+        // Than faint the caracter
+        character.style.opacity = 0;
+    });
 }
