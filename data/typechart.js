@@ -1,7 +1,7 @@
 /**
  * @type {Object.<string, {Normal: number, Fire: number, Fighting: number, Flying: number, Water: number, Grass: number, Poison: number, Electric: number, Ground: number, Psychic: number, Rock: number, Ice: number, Bug: number, Dragon: number, Ghost: number, Dark: number, Steel: number, Fairy: number}>}
  */
-const typeChart =
+module.exports =
 {
     Normal: {
         Normal: 1,

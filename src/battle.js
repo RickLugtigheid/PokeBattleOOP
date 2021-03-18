@@ -114,15 +114,15 @@ module.exports = class
                     const dmg = target.takeDamage(source, move);
 
                     // Notify the clients that 'target' has take damage
-                    this.player1.socket.emit('pokemon', {event: 'damage', user: target == this.player1.pokemon, damage: dmg});
-                    this.player2.socket.emit('pokemon', {event: 'damage', user: target == this.player2.pokemon, damage: dmg});
+                    this.player1.socket.emit('pokemon', {event: 'damage', user: target == this.player1.pokemon, damage: dmg.damage, effective: dmg.effectiveness});
+                    this.player2.socket.emit('pokemon', {event: 'damage', user: target == this.player2.pokemon, damage: dmg.damage, effective: dmg.effectiveness});
 
                     // Check if move user should recive recoil
                     if(move.recoil) 
                     {
-                        source.takeMiscDamage(dmg * move.recoil);
-                        this.player1.socket.emit('pokemon', {event: 'damage', user: source == this.player1.pokemon, damage: dmg * move.recoil});
-                        this.player2.socket.emit('pokemon', {event: 'damage', user: source == this.player2.pokemon, damage: dmg * move.recoil});    
+                        source.takeMiscDamage(dmg.damage * move.recoil);
+                        this.player1.socket.emit('pokemon', {event: 'damage', user: source == this.player1.pokemon, damage: dmg.damage * move.recoil});
+                        this.player2.socket.emit('pokemon', {event: 'damage', user: source == this.player2.pokemon, damage: dmg.damage * move.recoil});    
                     }
 
                     // Check if 'target' has health left

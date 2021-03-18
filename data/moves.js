@@ -49,6 +49,28 @@ module.exports.moves =
         target: "normal",
         recoil: .33
     },
+    razorleaf: {
+        name: "Razor Leaf",
+        desc: "Sharp-edged leaves are launched to slash at opposing Pokémon.",
+        type: 'Grass',
+        basePower: 55,
+        accuracy: 100,
+        category: "Physical",
+        pp: 25,
+        flags: {contact: false, protect: true},
+        target: "normal"
+    },
+    seedbomb: {
+        name: "Razor Leaf",
+        desc: "The user slams a barrage of hard-shelled seeds down on the target from above.",
+        type: 'Grass',
+        basePower: 80,
+        accuracy: 100,
+        category: "Physical",
+        pp: 15,
+        flags: {contact: false, protect: true},
+        target: "normal"
+    },
     thundershock: {
         name: "Thunder Shock",
         desc: "A physical attack in which the user charges and slams into the target with its whole body.",
@@ -102,10 +124,65 @@ module.exports.moves =
         pp: 5,
         flags: {contact: false, protect: true},
         target: "normal"
-    }
+    },
+    watergun: {
+        name: "Water Gun",
+        desc: "The target is blasted with a forceful shot of water.",
+        type: "Water",
+        basePower: 40,
+        accuracy: 100,
+        category: "Special",
+        pp: 25,
+        flags: {contact: false, protect: true},
+        target: "normal"
+    },
+    hydropump: {
+        name: "Hydro Pump",
+        desc: "The target is blasted by a huge volume of water launched under great pressure.",
+        type: "Water",
+        basePower: 110,
+        accuracy: 80,
+        category: "Special",
+        pp: 5,
+        flags: {contact: false, protect: true},
+        target: "normal"
+    },
+    flashcannon: {
+        name: "Flash Cannon",
+        desc: "The user gathers all its light energy and releases it all at once.",
+        type: "Steel",
+        basePower: 80,
+        accuracy: 100,
+        category: "Special",
+        pp: 10,
+        flags: {contact: false, protect: true},
+        target: "normal"
+    },
+    sludgebomb: {
+        name: "Sludge Bomb",
+        desc: "Unsanitary sludge is hurled at the target.",
+        type: "Poison",
+        basePower: 90,
+        accuracy: 100,
+        category: "Special",
+        pp: 10,
+        flags: {contact: false, protect: true},
+        target: "normal"
+    },
+    earthquake: {
+        name: "Earthquake",
+        desc: "A powerful quake, but has no effect on flying foes.",
+        type: "Ground",
+        basePower: 100,
+        accuracy: 100,
+        category: "Physical",
+        pp: 10,
+        flags: {contact: false, protect: true},
+        target: "normal"
+    },
 }
 
-module.exports.Move = class
+class Move
 {
     /**
      * Display name of the move
@@ -214,3 +291,4 @@ module.exports.Move = class
         return random <= this.accuracy;
     }
 }
+module.exports.Move = Move;
