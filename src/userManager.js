@@ -13,19 +13,15 @@ module.exports = class
     {
         io.on('connection', client =>
         {
-            this.clients.push(client);
             client.on('battle', args =>
             {
                 console.log('[Battle]: Recived ', args);
                 if(args['event'] == 'enter') 
                 {
                     this.userEnterBattleQueue(client, args['tier']);
-                    client.on('disconnect', () =>
-                    {
-                        this.battleQueue[args['tier']][client] = null;
-                    });
                 }
             });
+            this.clients.push(client);
         });
     }
     /**
@@ -46,6 +42,23 @@ module.exports = class
      */
     static userEnterBattleQueue(user, tier)
     {
+        // Drop user from the queue when disconnected
+        user.on('disconnect', () =>
+        {
+            console.log(`[${user.id}]: Left the '${tier}' battle queue...`);
+
+            // Remove the user from the battle queue so we don't start a battle with the unconnected user
+            this.battleQueue[tier] = this.battleQueue[tier].filter(function(sock){ 
+                return sock != user; 
+            });
+        });
+        // Let the user cancel this queue
+        user.on('battle', args =>
+        {
+            // Remove the user from the battle queue so we don't start a battle with the unconnected user
+            if(args['event'] == 'cancel' && this.battleQueue[args['tier']]) this.battleQueue[args['tier']] = this.battleQueue[args['tier']].filter(function(sock){ return sock != user; });
+        });
+
         // Show that user entered
         console.log(`[${user.id}]: Entered the '${tier}' battle queue`);
 

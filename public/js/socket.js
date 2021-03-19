@@ -11,10 +11,21 @@ const socket = io();
 // Set button events
 BATTLE_BTN.onclick = function()
 {
-    // Go to the battle queue and set battle btn in active
-    socket.emit('battle', {event: 'enter', tier: document.getElementById('tier-select').value});
-    console.log('Sending: ', {'battle': {event: 'enter', tier: document.getElementById('tier-select').value}});
-    BATTLE_BTN.classList.add('disabled');
+    if(BATTLE_BTN.classList.contains('btn-cancel'))
+    {
+        // Let the user cancel the battle
+        socket.emit('battle', {event: 'cancel', tier: document.getElementById('tier-select').value});
+        BATTLE_BTN.classList.remove('btn-cancel');
+        BATTLE_BTN.innerHTML = "Battle";
+    }
+    else
+    {
+        // Go to the battle queue and set battle btn in active
+        socket.emit('battle', {event: 'enter', tier: document.getElementById('tier-select').value});
+        console.log('Sending: ', {'battle': {event: 'enter', tier: document.getElementById('tier-select').value}});
+        BATTLE_BTN.classList.add('btn-cancel');
+        BATTLE_BTN.innerHTML = "Cancel battle...";
+    }
 }
 document.querySelectorAll('.home-btn').forEach(homeBtn =>
 {
@@ -32,14 +43,17 @@ socket.on('battle', args =>
     switch(args['event'])
     {
         case "start":
+            // Reset battle btn
+            BATTLE_BTN.innerHTML = 'Battle';
+
             // Set pokemon of the user `args['player']` and enemy `args['enemy']`
             
             // Show all battle elements
             Containers.load('battle');
 
-            // Set animations
-            PLAYER_CONTAINER.querySelector('img').src = `../pokemon/${args['player'].id}_back.gif`; // Player back animation
-            ENEMY_CONTAINER.querySelector('img').src = `../pokemon/${args['enemy'].id}_front.gif`; // Enemy front sprite
+            // Set animations (from pokemom showdown)
+            PLAYER_CONTAINER.querySelector('img').src = `http://play.pokemonshowdown.com/sprites/ani-back/${args['player'].id}.gif`; // Player back animation
+            ENEMY_CONTAINER.querySelector('img').src = `http://play.pokemonshowdown.com/sprites/ani/${args['enemy'].id}.gif`; // Enemy front sprite
 
             // Set name and stats
             const playerHP = Math.floor(Math.floor(((((2*args['player'].stats.hp)+100)*100)/100)+10));
@@ -60,8 +74,9 @@ socket.on('battle', args =>
         break;
         case "end":
             document.getElementById('battle-container').style.opacity = .75;
-            // Load pupop with jquery
-            $("#battleModal").modal();
+            // Load battle end message
+            console.log('battle ended');
+            document.getElementById('battle-end-msg').classList.remove('disabled');
         break;
     }
 });
@@ -108,7 +123,7 @@ socket.on('move', args =>
                 console.log('Sending: ', {'move': {event: 'selected', moveID: args['id']}});
                 socket.emit('move', {event: 'selected', moveID: args['id']});
             };
-            moveElement.classList.value = args['info'].type + ' move btn btn-primary';
+            moveElement.classList.value = args['info'].type + ' move btn btn-primary col-lg-6 col-6';
             MOVE_LIST.appendChild(moveElement);
         break;
     }

@@ -11,57 +11,56 @@
 <body>
     <!-- Home -->
     <div id="home-container" class="container">
-        <label for="tier-select">Choose a Tier:</label>
-        <select name="tiers" id="tier-select">
-            <option value="ou">OU (Over Used)</option>
-            <option value="uu">UU (Under Used)</option>
-            <option value="lc">LC (Little Cup)</option>
-        </select>
-        <button id="battle-btn">Battle</button>
+
+        <div class="form-group">
+            <label for="tier-select">Select Format:</label>
+            <select class="form-select" name="tiers" id="tier-select">
+                <option value="ou">OU (Over Used)</option>
+                <option value="uu">UU (Under Used)</option>
+                <option value="lc">LC (Little Cup)</option>
+            </select>
+        </div>
+        <button id="battle-btn" class="btn btn-primary">Battle</button>
     </div>
 
     <!-- Battle -->
     <div id="battle-container" class="container disabled">
-        <div id="enemy">
-            <img src="" alt="Animation not found">
-            <h2 id="name"></h2>
-            <progress max="500" value="500"></progress>
+        <div id="battle-ground" class="container bg-image rounded">
+            <div class="row">
+                <div class="col-6"></div>
+                <div id="enemy" class="col-6">
+                    <div class="stat-container col-6 text-center bg-dark border rounded">
+                        <p class="text-light"><b id="name"></b>  LVL 100</p>
+                        <progress max="500" value="500"></progress>
+                    </div>
+                    <img src="" alt="Animation not found">
+                </div>
+    
+                <div id="player" class="col-6">
+                    <div class="stat-container col-6 text-center bg-dark border rounded">
+                        <p class="text-light"><b id="name"></b>  LVL 100</p>
+                        <progress max="500" value="500"></progress>
+                    </div>
+                    <img src="" alt="Animation not found">
+                </div>
+                <div class="col-6"></div>
         </div>
-        
-        <div id="player">
-            <img src="" alt="Animation not found">
-            <h2 id="name"></h2>
-            <progress max="500" value="500"></progress>
+            <!-- <img id="battle-base" src="../images/battle_base.png" alt=""> -->
         </div>
         
         <div id="battle-logs">
             
         </div>
+        <div class="row justify-content-md-center">
+            <div id="move-list" class="col-lg-6 col-12 img-thumbnail">
 
-        <div id="move-list">
-
+            </div>
         </div>
     </div>
 
-      <!-- Modals -->
-    <div class="modal fade" id="battleModal" role="dialog">
-    <div class="modal-dialog">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Modal Header</h4>
-        </div>
-        <div class="modal-body">
-            <p>Some text in the modal.</p>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default home-btn" data-dismiss="modal">home</button>
-        </div>
-        </div>
-        
-    </div>
+    <div id="battle-end-msg" class="bg-light border rounded disabled">
+        <b id="message">Battle ended! </b>
+        <button class="btn btn-primary">Home</button>
     </div>
 
     <!-- Scripts -->

@@ -2,17 +2,95 @@
     visibility: hidden;
 }
 
+/* Battle */
+#battle-ground
+{
+    position: relative;
+    background-image: url('http://bit.ly/pokemonbg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    border: 3px solid black;
+    border-radius: 8px 8px 0 0;
+    height: 480px;
+    width: 800px;
+}
+
+#player img
+{
+    position: absolute;
+    left: 100px;
+    bottom: 10px;
+    width: 180px;
+}
+#enemy img
+{
+    position: absolute;
+    bottom: 175px;
+    right: 140px;
+    width: 110px;
+}
+
+#battle-end-msg
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 /* Type Colors */
+.move
+{
+    border-color: black !important;
+}
 .Normal
 {
     background-color: gray !important;
+}
+.Normal:hover{
+    background-color: rgb(100, 100, 100) !important;
 }
 .Fire
 {
     background-color: red !important;
 }
+.Fire:hover{
+    background-color: rgb(207, 0, 0) !important;
+}
+.Grass
+{
+    background-color: green !important;
+}
+.Grass:hover{
+    background-color: rgb(1, 105, 1) !important;
+}
+.Poison
+{
+    background-color: purple !important;
+}
+.Poison:hover{
+    background-color: rgb(107, 1, 107) !important;
+}
 .Electric
 {
     background-color: yellow !important;
     color: black !important;
+}
+.Electric:hover{
+    background-color: rgb(219, 219, 3) !important;
+}
+.Ground
+{
+    background-color: rgb(161, 76, 7) !important;
+}
+.Ground:hover{
+    background-color: rgb(150, 69, 2) !important;
+}
+.Steel
+{
+    background-color: rgb(221, 221, 221) !important;
+    color: black !important;
+}
+.Steel:hover{
+    background-color: rgb(206, 206, 206) !important;
 }

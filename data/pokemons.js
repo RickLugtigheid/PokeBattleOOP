@@ -127,7 +127,7 @@ class Pokemon
         const effective = this.calcEffectiveness(move); // Effectiveness = 0 or .5 or 1 or 2 or 4
         const level     = 100;
 
-        const damage = ((((2 * level / 5 + 2) * attack * power / defence) / 50) + 2) * stab * effective;
+        const damage = (((((2 * level / 5 + 2) * attack * power / defence) / 50) + 2) * stab) * effective;
         this.health -= damage;
         return {damage: damage, effectiveness: effective};
     }
@@ -161,8 +161,10 @@ class Pokemon
             effectiveness = typeChart[this.types[0]][move.type] * typeChart[this.types[1]][move.type];
         }
         // Else just get the weakness/strength of out first type
-        else typeChart[this.types[0]][move.type];
-        return 1;
+        else effectiveness = typeChart[this.types[0]][move.type];
+
+        // Return the efffectiveness the given move wil have on us
+        return effectiveness;
     }
 }
 module.exports.Pokemon = Pokemon;

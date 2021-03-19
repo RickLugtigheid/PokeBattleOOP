@@ -38,7 +38,6 @@ module.exports =
         "quickattack",
         "headbutt",
         "ember",
-        "inferno",
         "flareblitz"
     ],
     charizard: [
