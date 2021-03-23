@@ -1,5 +1,6 @@
-.disabled {
-    visibility: hidden;
+.disabled 
+{
+    display:none;
 }
 
 /* Battle */

@@ -29,6 +29,7 @@ BATTLE_BTN.onclick = function()
         document.getElementById('tier-select').setAttribute('disabled', 'disabled');
     }
 }
+// Set all home buttons (for if we have/need more than 1)
 document.querySelectorAll('.home-btn').forEach(homeBtn =>
 {
     homeBtn.onclick = function()
@@ -39,15 +40,16 @@ document.querySelectorAll('.home-btn').forEach(homeBtn =>
 });
 
 // Set event listners
-socket.on('disconnect', function () {
+socket.on('disconnect', () => 
+{
+    // Show disconnection message
     document.getElementById('battle-container').style.opacity = .75;
     document.querySelector('#battle-end-msg #message').innerHTML = "Server Stoped!";
 
     document.getElementById('server-error').classList.remove('disabled');
 
-    // Load battle end message
     console.log('server disconected');
-    document.getElementById('battle-end-msg').classList.remove('disabled');
+    if(Containers.container != "home") document.getElementById('battle-end-msg').classList.remove('disabled');
 });
 socket.on('battle', args =>
 {
@@ -57,6 +59,7 @@ socket.on('battle', args =>
         case "start":
             // Reset home container
             BATTLE_BTN.innerHTML = 'Battle';
+            BATTLE_BTN.classList.remove('btn-cancel');
             document.getElementById('tier-select').removeAttribute('disabled');
 
             // Set pokemon of the user `args['player']` and enemy `args['enemy']`

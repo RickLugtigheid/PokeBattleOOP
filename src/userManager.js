@@ -16,10 +16,9 @@ module.exports = class
             client.on('battle', args =>
             {
                 console.log('[Battle]: Recived ', args);
-                if(args['event'] == 'enter') 
-                {
+                // Check if event is enter and if the client isn't already in a battle
+                if(args['event'] == 'enter' && !this.clientsInBattle.includes(client)) 
                     this.userEnterBattleQueue(client, args['tier']);
-                }
             });
             this.clients.push(client);
         });
@@ -28,6 +27,7 @@ module.exports = class
      * @type {Array.<Socket>}
      */
     static clients = [];
+    static clientsInBattle = [];
     /**
      * @type {Object.<string, Array.<Socket>>}
      */
@@ -89,7 +89,11 @@ module.exports = class
      */
     static startBattle(player1, player2, tier)
     {
+        // Create a battle
         const battle = new Battle(player1, player2, tier);
+        // Add battle to active battles
         this.activeBattles.push(battle);
+        // Add clients to clients in battle for user input validation
+        this.clientsInBattle.push(player1, player2);
     }
 }

@@ -3,6 +3,7 @@ const { dex, Pokemon } = require('../data/pokemons');
 const { moves, Move } = require('../data/moves');
 const learnsets = require('../data/learnsets');
 const tiers = require('../data/tiers');
+
 module.exports = class
 {
     /**
@@ -44,7 +45,12 @@ module.exports = class
             switch(args['event'])
             {
                 case 'selected':
-                    console.log(`[${player.id}]: Selected move '${args['moveID']}'`);
+                    // Check if the move exists in the pokemons moveSet
+                    if(!thisPlayer.pokemon.moveSet.includes(args['moveID'])) 
+                    {
+                        console.log(`[${player.id}]: ${thisPlayer.pokemon.name}'s Moveset doesn't include '${args['moveID']}'!`);
+                        return; // Don't select args['moveID']
+                    }
                     // Set selected move to move with id 'moveID'
                     thisPlayer.pokemon.selectedMove = new Move(moves[args['moveID']]);
                     // Try start if both players have selected a move
@@ -165,10 +171,25 @@ module.exports = class
      */
     end()
     {
+        // Get our user manager
+        const userManager = require('./userManager')
+
         console.log(`[Battle]: Ended between '${this.player1.socket.id}' and '${this.player2.socket.id}'`);
         this.player1.socket.emit('battle', {event: 'end'});
         this.player2.socket.emit('battle', {event: 'end'});
         
+        // Remove this from active battles
+        userManager.activeBattles = userManager.activeBattles.filter(battle =>
+        {
+            return battle != this;
+        });
+        
+        // Remove players from clientsInBattle array
+        userManager.clientsInBattle = userManager.clientsInBattle.filter(sock =>
+        {
+            return sock.id != this.player1.socket.id && sock.id != this.player2.socket.id;
+        });
+
         // Unset players so we don't take events anymore and we can wait for the garbage collector without the players being bale to battle
         this.active = false;
         this.player1.socket = null;
