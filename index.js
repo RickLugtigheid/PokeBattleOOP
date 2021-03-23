@@ -4,10 +4,17 @@ const app = express();
 app.use(express.static('public'))
 const port = 3000;
 
+// Start socket server
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
 // Get routes
 require('./routes')(app);
 
+// Set socket events
+require('./src/userManager').addListners(io);
+
 // Start server
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+http.listen(port, () => {
+    console.log(`Listening at http://localhost:${port}`)
 })

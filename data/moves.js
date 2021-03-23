@@ -1,7 +1,7 @@
 /**
  * @type {Object.<string, Move>}
  */
-const moves = 
+module.exports.moves = 
 {
     tackle: {
         name: "Tackle",
@@ -12,7 +12,8 @@ const moves =
         category: "Physical",
         pp: 35,
         flags: {contact: true, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     quickattack: {
         name: "Quick Attack",
@@ -36,6 +37,7 @@ const moves =
         pp: 15,
         flags: {contact: true, protect: true},
         target: "normal",
+        priority: 0
     },
     flareblitz: {
         name: "Flare Blitz",
@@ -47,7 +49,32 @@ const moves =
         pp: 15,
         flags: {contact: true, protect: true},
         target: "normal",
-        recoil: [33, 100]
+        recoil: .33,
+        priority: 0
+    },
+    razorleaf: {
+        name: "Razor Leaf",
+        desc: "Sharp-edged leaves are launched to slash at opposing Pokémon.",
+        type: 'Grass',
+        basePower: 55,
+        accuracy: 100,
+        category: "Physical",
+        pp: 25,
+        flags: {contact: false, protect: true},
+        target: "normal",
+        priority: 0
+    },
+    seedbomb: {
+        name: "Razor Leaf",
+        desc: "The user slams a barrage of hard-shelled seeds down on the target from above.",
+        type: 'Grass',
+        basePower: 80,
+        accuracy: 100,
+        category: "Physical",
+        pp: 15,
+        flags: {contact: false, protect: true},
+        target: "normal",
+        priority: 0
     },
     thundershock: {
         name: "Thunder Shock",
@@ -58,7 +85,8 @@ const moves =
         category: "Special",
         pp: 30,
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     electroball: {
         name: "Electro Ball",
@@ -79,7 +107,8 @@ const moves =
             else if(ratio < 1) return 40;
         },
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     ember: {
         name: "Ember",
@@ -90,7 +119,8 @@ const moves =
         category: "Special",
         pp: 30,
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     inferno: {
         name: "Inferno",
@@ -101,8 +131,69 @@ const moves =
         category: "Special",
         pp: 5,
         flags: {contact: false, protect: true},
-        target: "normal"
-    }
+        target: "normal",
+        priority: 0
+    },
+    watergun: {
+        name: "Water Gun",
+        desc: "The target is blasted with a forceful shot of water.",
+        type: "Water",
+        basePower: 40,
+        accuracy: 100,
+        category: "Special",
+        pp: 25,
+        flags: {contact: false, protect: true},
+        target: "normal",
+        priority: 0
+    },
+    hydropump: {
+        name: "Hydro Pump",
+        desc: "The target is blasted by a huge volume of water launched under great pressure.",
+        type: "Water",
+        basePower: 110,
+        accuracy: 80,
+        category: "Special",
+        pp: 5,
+        flags: {contact: false, protect: true},
+        target: "normal",
+        priority: 0
+    },
+    flashcannon: {
+        name: "Flash Cannon",
+        desc: "The user gathers all its light energy and releases it all at once.",
+        type: "Steel",
+        basePower: 80,
+        accuracy: 100,
+        category: "Special",
+        pp: 10,
+        flags: {contact: false, protect: true},
+        target: "normal",
+        priority: 0
+    },
+    sludgebomb: {
+        name: "Sludge Bomb",
+        desc: "Unsanitary sludge is hurled at the target.",
+        type: "Poison",
+        basePower: 90,
+        accuracy: 100,
+        category: "Special",
+        pp: 10,
+        flags: {contact: false, protect: true},
+        target: "normal",
+        priority: 0
+    },
+    earthquake: {
+        name: "Earthquake",
+        desc: "A powerful quake, but has no effect on flying foes.",
+        type: "Ground",
+        basePower: 100,
+        accuracy: 100,
+        category: "Physical",
+        pp: 10,
+        flags: {contact: false, protect: true},
+        target: "normal",
+        priority: 0
+    },
 }
 
 class Move
@@ -147,8 +238,8 @@ class Move
      */
     priority = 0;
     /**
-     * Recoil damage; num1 of num2 of damage delt; Set null for no recoil damage
-     * @type {Array<string>}
+     * Recoil damage; % of damage to deal of delt damage; Set null for no recoil damage
+     * @type {int}
      */
     recoil = null;
     /**
@@ -166,6 +257,28 @@ class Move
     */
     target;
 
+    /**
+     * @param {Move} moveObj 
+     */
+    constructor(moveObj)
+    {
+        this.accuracy = moveObj.accuracy;
+        this.basePower = moveObj.basePower;
+        this.category = moveObj.category;
+        this.desc = moveObj.desc;
+        this.flags = moveObj.flags;
+        this.name = moveObj.name;
+        this.onBasePower = moveObj.onBasePower;
+        this.pp = moveObj.pp;
+        this.priority = moveObj.priority;
+        this.recoil = moveObj.recoil;
+        this.secondary = moveObj.secondary;
+        this.target = moveObj.target;
+        this.type = moveObj.type;
+
+        this.curentPP = this.pp;
+    }
+
     /** Events */
     /**
      * 
@@ -180,6 +293,16 @@ class Move
      */
     getBasePower(source, target)
     {
-        return this.onBasePower() || this.basePower(source, target);
+        if(typeof this.onBasePower == 'function') return this.onBasePower(source, target);
+        return this.basePower;
+    }
+    doesHit()
+    {
+        if(typeof this.accuracy == "boolean") return this.accuracy;
+        
+        // Random % chance the it
+        const random = Math.floor(Math.random() * 100) + 1; // returns a random integer from 1 to 100
+        return random <= this.accuracy;
     }
 }
+module.exports.Move = Move;
