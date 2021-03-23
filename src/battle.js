@@ -82,7 +82,13 @@ module.exports = class
         console.log('[Battle]: Starting turn');
 
         // Get the player that will move first and the one that moves last
-        const first = (this.player1.pokemon.baseStats.spe >= this.player2.pokemon.baseStats.spe ? this.player1 : this.player2);
+        let first = (this.player1.pokemon.baseStats.spe >= this.player2.pokemon.baseStats.spe) ? this.player1 : this.player2;
+        
+        // Check if one of the moves has priority
+        if(this.player1.pokemon.selectedMove.priority > this.player2.pokemon.selectedMove.priority || this.player1.pokemon.selectedMove.priority < this.player2.pokemon.selectedMove.priority)
+            first = this.player1.pokemon.selectedMove.priority > this.player2.pokemon.selectedMove.priority ? this.player1 : this.player2;
+        
+        // Get the player that doesn't move first
         const last = first == this.player1 ? this.player2 : this.player1;
 
         // Use the selected moves

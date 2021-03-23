@@ -12,7 +12,8 @@ module.exports.moves =
         category: "Physical",
         pp: 35,
         flags: {contact: true, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     quickattack: {
         name: "Quick Attack",
@@ -36,6 +37,7 @@ module.exports.moves =
         pp: 15,
         flags: {contact: true, protect: true},
         target: "normal",
+        priority: 0
     },
     flareblitz: {
         name: "Flare Blitz",
@@ -47,7 +49,8 @@ module.exports.moves =
         pp: 15,
         flags: {contact: true, protect: true},
         target: "normal",
-        recoil: .33
+        recoil: .33,
+        priority: 0
     },
     razorleaf: {
         name: "Razor Leaf",
@@ -58,7 +61,8 @@ module.exports.moves =
         category: "Physical",
         pp: 25,
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     seedbomb: {
         name: "Razor Leaf",
@@ -69,7 +73,8 @@ module.exports.moves =
         category: "Physical",
         pp: 15,
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     thundershock: {
         name: "Thunder Shock",
@@ -80,7 +85,8 @@ module.exports.moves =
         category: "Special",
         pp: 30,
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     electroball: {
         name: "Electro Ball",
@@ -101,7 +107,8 @@ module.exports.moves =
             else if(ratio < 1) return 40;
         },
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     ember: {
         name: "Ember",
@@ -112,7 +119,8 @@ module.exports.moves =
         category: "Special",
         pp: 30,
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     inferno: {
         name: "Inferno",
@@ -123,7 +131,8 @@ module.exports.moves =
         category: "Special",
         pp: 5,
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     watergun: {
         name: "Water Gun",
@@ -134,7 +143,8 @@ module.exports.moves =
         category: "Special",
         pp: 25,
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     hydropump: {
         name: "Hydro Pump",
@@ -145,7 +155,8 @@ module.exports.moves =
         category: "Special",
         pp: 5,
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     flashcannon: {
         name: "Flash Cannon",
@@ -156,7 +167,8 @@ module.exports.moves =
         category: "Special",
         pp: 10,
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     sludgebomb: {
         name: "Sludge Bomb",
@@ -167,7 +179,8 @@ module.exports.moves =
         category: "Special",
         pp: 10,
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
     earthquake: {
         name: "Earthquake",
@@ -178,7 +191,8 @@ module.exports.moves =
         category: "Physical",
         pp: 10,
         flags: {contact: false, protect: true},
-        target: "normal"
+        target: "normal",
+        priority: 0
     },
 }
 

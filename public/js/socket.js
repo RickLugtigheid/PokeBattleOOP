@@ -17,6 +17,7 @@ BATTLE_BTN.onclick = function()
         socket.emit('battle', {event: 'cancel', tier: document.getElementById('tier-select').value});
         BATTLE_BTN.classList.remove('btn-cancel');
         BATTLE_BTN.innerHTML = "Battle";
+        document.getElementById('tier-select').removeAttribute('disabled');
     }
     else
     {
@@ -25,6 +26,7 @@ BATTLE_BTN.onclick = function()
         console.log('Sending: ', {'battle': {event: 'enter', tier: document.getElementById('tier-select').value}});
         BATTLE_BTN.classList.add('btn-cancel');
         BATTLE_BTN.innerHTML = "Cancel battle...";
+        document.getElementById('tier-select').setAttribute('disabled', 'disabled');
     }
 }
 document.querySelectorAll('.home-btn').forEach(homeBtn =>
@@ -43,8 +45,9 @@ socket.on('battle', args =>
     switch(args['event'])
     {
         case "start":
-            // Reset battle btn
+            // Reset home container
             BATTLE_BTN.innerHTML = 'Battle';
+            document.getElementById('tier-select').removeAttribute('disabled');
 
             // Set pokemon of the user `args['player']` and enemy `args['enemy']`
             
