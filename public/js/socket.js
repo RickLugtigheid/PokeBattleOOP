@@ -39,6 +39,16 @@ document.querySelectorAll('.home-btn').forEach(homeBtn =>
 });
 
 // Set event listners
+socket.on('disconnect', function () {
+    document.getElementById('battle-container').style.opacity = .75;
+    document.querySelector('#battle-end-msg #message').innerHTML = "Server Stoped!";
+
+    document.getElementById('server-error').classList.remove('disabled');
+
+    // Load battle end message
+    console.log('server disconected');
+    document.getElementById('battle-end-msg').classList.remove('disabled');
+});
 socket.on('battle', args =>
 {
     console.log('Recived: ', {'battle': args});
